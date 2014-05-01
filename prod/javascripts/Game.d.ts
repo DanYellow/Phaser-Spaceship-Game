@@ -1,6 +1,3 @@
-declare class SimpleGame {
-    public game: Phaser.Game;
+declare class Game extends Phaser.Game {
     constructor();
-    public preload(): void;
-    public create(): void;
 }

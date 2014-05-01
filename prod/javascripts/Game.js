@@ -1,27 +1,22 @@
-var SimpleGame = (function () {
-    function SimpleGame() {
-        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'game-scene', { preload: this.preload, create: this.create });
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Game = (function (_super) {
+    __extends(Game, _super);
+    function Game() {
+        _super.call(this, 800, 600, Phaser.AUTO, 'game-scene', null);
+
+        this.state.add('Level', Level, false);
+
+        this.state.start('Level');
     }
-    SimpleGame.prototype.preload = function () {
-        this.game.load.image('background', 'images/starfield.jpg');
-        this.game.load.image('ufo', 'images/ufo.png');
-
-        this.game.load.atlasXML('enemy', 'images/enemy.png', 'images/datas/enemy.xml');
-    };
-
-    SimpleGame.prototype.create = function () {
-        var game = this.game;
-
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.add.tileSprite(0, 0, 2000, 2000, 'background');
-        game.world.setBounds(0, 0, 1400, 1400);
-
-        var ufo = new Spaceship(game, 50, 10, 50);
-    };
-    return SimpleGame;
-})();
+    return Game;
+})(Phaser.Game);
 
 window.onload = function () {
-    var game = new SimpleGame();
+    var game = new Game();
 };
 //# sourceMappingURL=Game.js.map

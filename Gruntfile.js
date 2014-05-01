@@ -77,6 +77,16 @@ module.exports = function(grunt) {
           "prod/index.html": "dev/views/index.jade"
         }
       }
+    },
+
+    watch: {
+      javascripts: {
+        files: ['dev/typescripts/**/*.ts'],
+        tasks: ['typescript'],
+        options: {
+          livereload: 35729
+        }
+      }
     }
   });
 
@@ -85,7 +95,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jade');
-  //grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
 
   // Default task(s).

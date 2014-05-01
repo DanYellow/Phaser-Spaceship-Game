@@ -12,8 +12,8 @@ class Spaceship extends Phaser.Sprite {
         game.camera.follow(this);
         game.physics.arcade.enable(this);
 
-
         this.health = hp;
+        this.alive = true;
         this.inputEnabled = true;
         this.anchor.setTo(0.5, 0.5);
 
@@ -40,5 +40,18 @@ class Spaceship extends Phaser.Sprite {
         } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
           this.y += this.speed;
         }
+    }
+
+    blink() {
+        /*this.alpha = 0;
+        var tween = this.game.add.tween(this).to( { alpha: 1 }, 10, Phaser.Easing.Linear.None, true, true, 3);*/
+    }
+
+    indicatePosition() {
+        var position = {
+            x: this.x,
+            y: this.y
+        }
+        return position;
     }
 }

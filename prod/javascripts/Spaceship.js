@@ -16,6 +16,7 @@ var Spaceship = (function (_super) {
         game.physics.arcade.enable(this);
 
         this.health = hp;
+        this.alive = true;
         this.inputEnabled = true;
         this.anchor.setTo(0.5, 0.5);
 
@@ -41,6 +42,17 @@ var Spaceship = (function (_super) {
         } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
             this.y += this.speed;
         }
+    };
+
+    Spaceship.prototype.blink = function () {
+    };
+
+    Spaceship.prototype.indicatePosition = function () {
+        var position = {
+            x: this.x,
+            y: this.y
+        };
+        return position;
     };
     return Spaceship;
 })(Phaser.Sprite);
