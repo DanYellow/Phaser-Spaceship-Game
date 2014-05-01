@@ -28,7 +28,7 @@ var Spaceship = (function (_super) {
     }
     Spaceship.prototype.update = function () {
         if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            this.x -= 5;
+            this.x -= this.speed;
             this.angle = -15;
         } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
             this.x += this.speed;

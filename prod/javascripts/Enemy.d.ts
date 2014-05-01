@@ -1,7 +1,11 @@
 /// <reference path="phaser.d.ts" />
 declare class Enemy extends Phaser.Sprite {
     public game: Phaser.Game;
-    public minSpeed: number;
-    public maxSpeed: number;
+    private minSpeed;
+    private maxSpeed;
     constructor(game: Phaser.Game);
+    public indicatePosition(): {
+        x: number;
+        y: number;
+    };
 }

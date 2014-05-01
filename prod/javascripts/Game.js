@@ -7,9 +7,9 @@ var __extends = this.__extends || function (d, b) {
 var Game = (function (_super) {
     __extends(Game, _super);
     function Game() {
-        _super.call(this, 800, 600, Phaser.AUTO, 'game-scene', null);
+        _super.call(this, 800, 600, Phaser.CANVAS, 'game-scene', null);
 
-        this.state.add('Level', Level, false);
+        this.state.add('Level', Level, true);
 
         this.state.start('Level');
     }

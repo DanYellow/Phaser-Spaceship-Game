@@ -1,8 +1,8 @@
 /// <reference path="phaser.d.ts"/>
 class Enemy  extends Phaser.Sprite {
     game: Phaser.Game
-    minSpeed: number
-    maxSpeed: number
+    private minSpeed: number
+    private maxSpeed: number
 
     constructor (game: Phaser.Game) {
         super(game, game.world.randomX, game.world.randomY, 'enemy', 0);
@@ -21,11 +21,20 @@ class Enemy  extends Phaser.Sprite {
         var vy = Math.random() * (this.maxSpeed - this.minSpeed + 1) - this.minSpeed;
 
         this.body.immovable = false;
-        this.body.collideWorldBounds = true; // L'objet ne peut pas sortir de la carte"
+        this.body.collideWorldBounds = true; // Sprite can't go outside the map
         this.body.bounce.setTo(1, 1);
         this.body.velocity.x = vx;
         this.body.velocity.y = vy;
+        this.body.setSize(10, 10, 20, 20);
 
         game.add.existing(this);
+    }
+
+    indicatePosition() {
+        var position = {
+            x: Math.round(this.x),
+            y: Math.round(this.y)
+        }
+        return position;
     }
 }

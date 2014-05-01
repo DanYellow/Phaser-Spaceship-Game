@@ -26,9 +26,17 @@ var Enemy = (function (_super) {
         this.body.bounce.setTo(1, 1);
         this.body.velocity.x = vx;
         this.body.velocity.y = vy;
+        this.body.setSize(10, 10, 20, 20);
 
         game.add.existing(this);
     }
+    Enemy.prototype.indicatePosition = function () {
+        var position = {
+            x: Math.round(this.x),
+            y: Math.round(this.y)
+        };
+        return position;
+    };
     return Enemy;
 })(Phaser.Sprite);
 //# sourceMappingURL=Enemy.js.map
