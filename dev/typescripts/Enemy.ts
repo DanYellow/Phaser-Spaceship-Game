@@ -2,8 +2,8 @@
 class Enemy  extends Phaser.Sprite {
     game: Phaser.Game
 
-    constructor (group) {
-        var game = this.game;
+    constructor (game: Phaser.Game) {
+        super(game, game.world.randomX, game.world.randomY, 'enemy', 0);
 
         this.animations.add('fly', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 10, true);
         this.scale.setTo(1.5, 1.5);
@@ -22,6 +22,6 @@ class Enemy  extends Phaser.Sprite {
 
         this.play('fly');
 
-        super(game, game.world.randomX, game.world.randomY, 'enemy', 0);
+        game.add.existing(this);
     }
 }

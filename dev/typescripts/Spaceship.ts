@@ -1,43 +1,44 @@
 /// <reference path="phaser.d.ts"/>
 
 class Spaceship extends Phaser.Sprite {
-    game: Phaser.Game
-    keyboard: game.input.keyboard
 
-    constructor (posX, posY, hp = 10) {
-        var game = this.game;
+    speed: number
 
-        //game.add.sprite(posX, posY, 'ufo');
-        game.input.keyboard;
+    constructor (game: Phaser.Game, x: number, y: number, hp = 10) {
+        super(game, x, y, 'ufo', 1);
+
+        this.speed = 3;
 
         game.camera.follow(this);
         game.physics.arcade.enable(this);
 
+
         this.health = hp;
         this.inputEnabled = true;
+        this.anchor.setTo(0.5, 0.5);
+
         this.body.bounce.setTo(0, 0);
         this.body.collideWorldBounds = true;
-        this.anchor.setTo(0.5, 0.5);
         this.body.gravity.setTo(0, 0);
 
-        super(game, posX, posY, 'ufo', 1);
+        game.add.existing(this);
     }
 
     update() {
-        if (this.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            this.sprite.x -= 5;
-            this.sprite.angle = -15;
-        } else if (this.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            this.sprite.x += speed;
-            this.sprite.angle = 15;
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+            this.x -= 5;
+            this.angle = -15;
+        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            this.x += this.speed;
+            this.angle = 15;
         } else {
-            this.sprite.rotation = 0;
+            this.rotation = 0;
         }
 
-        if (this.keyboard.isDown(Phaser.Keyboard.UP)) {
-          this.sprite.y -= speed;
-        } else if (this.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-          this.sprite.y += speed;
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+          this.y -= this.speed;
+        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+          this.y += this.speed;
         }
     }
 }

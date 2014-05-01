@@ -1,6 +1,5 @@
 /// <reference path="phaser.d.ts" />
-declare class Enemy {
-    public enemy: Phaser.Sprite;
+declare class Enemy extends Phaser.Sprite {
     public game: Phaser.Game;
-    constructor(group: any);
+    constructor(game: Phaser.Game);
 }

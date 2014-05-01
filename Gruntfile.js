@@ -36,11 +36,46 @@ module.exports = function(grunt) {
           { src: '<%= meta.dev.bowerPath %>phaser/phaser.d.ts', dest: 'dev/typescripts/phaser.d.ts' }
         ]
       },
+
+      images: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= meta.dev.path %>images/',
+            src: ['**/*'],
+            dest: '<%= meta.prod.path %>images/'
+          }
+        ]
+      },
+
+      stylesheets: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= meta.dev.path %>stylesheets/',
+            src: ['**/*.css'],
+            dest: '<%= meta.prod.path %>stylesheets/'
+          }
+        ]
+      }
     },
 
     clean: {
       build: {
         src: ["prod/*"]
+      }
+    },
+
+    jade: {
+      compile: {
+        options: {
+          data: {
+            debug: false
+          }
+        },
+        files: {
+          "prod/index.html": "dev/views/index.jade"
+        }
       }
     }
   });
@@ -49,11 +84,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-typescript');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-jade');
   //grunt.loadNpmTasks('grunt-contrib-watch');
 
 
   // Default task(s).
-  grunt.registerTask('default', ['clean', 'copy', 'typescript']);
+  grunt.registerTask('default', ['clean', 'jade', 'copy', 'typescript']);
   grunt.registerTask('watcher', ['watch']);
 
 };
