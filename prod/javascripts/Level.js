@@ -16,6 +16,8 @@ var Level = (function (_super) {
         this.game.load.image('star', 'images/star.png');
         this.game.load.image('red-star', 'images/red-star.png');
 
+        this.game.load.image('indicator', 'images/indicator.png');
+
         this.game.load.atlasXML('enemy', 'images/enemy.png', 'images/datas/enemy.xml');
     };
 
@@ -51,12 +53,23 @@ var Level = (function (_super) {
         this.scoreText.fixedToCamera = true;
 
         this.doge = new Enemy(game);
+        this.doge.scale.setTo(15, 15);
+        this.doge.anchor.setTo(0, 0);
+
+        this.test = game.add.sprite(1500, 950, 'indicator');
+
+        this.indicator = game.add.sprite(0, 0, 'indicator');
+        game.physics.arcade.enable(this.indicator);
+        this.indicator.body.collideWorldBounds = true;
+        this.indicator.anchor.setTo(0, 0);
+
+        console.log('ANGLE : ', Phaser.Point);
     };
 
     Level.prototype.update = function () {
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
 
-        console.log(this.doge.indicatePosition());
+        var ufo = this.spaceship, test = this.test, camera = this.game.camera;
     };
 
     Level.prototype.render = function () {

@@ -1,0 +1,29 @@
+{
+  "name": "Phaser-Multiplayer",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "phaser": "latest"
+  },
+  "devDependencies": {
+
+  },
+  "homepage": "https://github.com/DanYellow/Phaser-Spaceship-Game",
+  "authors": [
+    "Jean-Louis Danielo <jeanlouis.danielo@sfr.fr>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -1,18 +1,19 @@
 {
-  "name": "application-name",
+  "name": "porfolio-backbone",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
-  "dependencies": {
+  "devDependencies": {
+    "grunt-typescript": "",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-jade": "*",
     "express": "3.4.8",
     "jade": "*",
     "grunt": "~0.4.4",
-    "grunt-typescript": "",
-    "grunt-contrib-watch": "~0.6.0",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-jade" : "*"
+    "grunt-contrib-watch": "~0.6.0"
   }
 }
+
