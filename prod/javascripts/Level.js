@@ -62,11 +62,10 @@ var Level = (function (_super) {
         game.physics.arcade.enable(this.indicator);
         this.indicator.body.collideWorldBounds = true;
         this.indicator.anchor.setTo(0, 0);
-
-        console.log('ANGLE : ', Phaser.Point);
     };
 
     Level.prototype.update = function () {
+        this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
 
         var ufo = this.spaceship, test = this.test, camera = this.game.camera;

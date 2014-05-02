@@ -45,6 +45,9 @@ var Spaceship = (function (_super) {
     };
 
     Spaceship.prototype.blink = function () {
+        this.alpha = 0;
+
+        var tween = this.game.add.tween(this).to({ alpha: 1 }, 10, Phaser.Easing.Linear.None, true, 0, 5);
     };
 
     Spaceship.prototype.indicatePosition = function () {
