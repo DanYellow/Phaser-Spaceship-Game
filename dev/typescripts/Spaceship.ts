@@ -44,7 +44,7 @@ class Spaceship extends Phaser.Sprite {
           this.y += this.speed;
         }
 
-        if(this.health <= 0 && this.isDead === false) {
+        if (this.health <= 0 && this.isDead === false) {
             this.revive(1);
             this.isDead = true;
             this.explode();
@@ -66,12 +66,13 @@ class Spaceship extends Phaser.Sprite {
     }
 
     explode() {
-        this.inputEnabled = false;
-        this.input = null;
+        this.input.stop();
         this.alive = false;
         this.animations.add('explode', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24], 10, false, true);
         this.play('explode', null, false, true);
         this.health = 0;
-        //this.events.onAnimationComplete.add(function(){}, this);
+        this.events.onAnimationComplete.add(function(){
+            this.game.state.start('Level');
+        }, this);
     }
 }

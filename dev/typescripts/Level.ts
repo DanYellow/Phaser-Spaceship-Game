@@ -28,7 +28,6 @@ class Level extends Phaser.State {
 
     preload() {
         this.game.load.image('background','images/starfield.jpg');
-        //this.game.load.image('ufo','images/ufo.png');
         this.game.load.atlasXML('ufo', 'images/explosion.png', 'images/datas/explosion.xml');
 
         this.game.load.image('star', 'images/star.png');
@@ -42,6 +41,7 @@ class Level extends Phaser.State {
     create() {
         this.nbEnemies = 30;
         this.nbBonus = 50;
+        this.stage.disableVisibilityChange = true;
 
         var game = this.game;
 

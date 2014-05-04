@@ -9,7 +9,7 @@ var Game = (function (_super) {
     function Game() {
         _super.call(this, 800, 600, Phaser.CANVAS, 'game-scene', null);
 
-        this.state.add('Level', Level, true);
+        this.state.add('Level', Level, false);
 
         this.state.start('Level');
     }
