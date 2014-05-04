@@ -2,12 +2,14 @@
 
 class Spaceship extends Phaser.Sprite {
 
-    speed: number
+    speed: number;
+    isDead: boolean;
 
-    constructor (game: Phaser.Game, x: number, y: number, hp = 10) {
-        super(game, x, y, 'ufo', 1);
+    constructor (game: Phaser.Game, x: number, y: number, hp: number = 10) {
+        super(game, x, y, 'ufo', 25);
 
         this.speed = 3;
+        this.isDead = false;
 
         game.camera.follow(this);
         game.physics.arcade.enable(this);
@@ -16,6 +18,7 @@ class Spaceship extends Phaser.Sprite {
         this.alive = true;
         this.inputEnabled = true;
         this.anchor.setTo(0.5, 0.5);
+        this.smoothed = false;
 
         this.body.bounce.setTo(0, 0);
         this.body.collideWorldBounds = true;
@@ -40,6 +43,12 @@ class Spaceship extends Phaser.Sprite {
         } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
           this.y += this.speed;
         }
+
+        if(this.health <= 0 && this.isDead === false) {
+            this.revive(1);
+            this.isDead = true;
+            this.explode();
+        }
     }
 
     blink() {
@@ -54,5 +63,15 @@ class Spaceship extends Phaser.Sprite {
             y: this.y
         }
         return position;
+    }
+
+    explode() {
+        this.inputEnabled = false;
+        this.input = null;
+        this.alive = false;
+        this.animations.add('explode', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24], 10, false, true);
+        this.play('explode', null, false, true);
+        this.health = 0;
+        //this.events.onAnimationComplete.add(function(){}, this);
     }
 }

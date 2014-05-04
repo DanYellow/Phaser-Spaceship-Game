@@ -14,6 +14,7 @@ declare class Level extends Phaser.State {
     public indicator: Phaser.Sprite;
     public test: Phaser.Sprite;
     public ab: Phaser.Graphics;
+    public timer: Phaser.Timer;
     public preload(): void;
     public create(): void;
     public update(): void;

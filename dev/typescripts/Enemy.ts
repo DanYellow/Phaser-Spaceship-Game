@@ -25,7 +25,7 @@ class Enemy  extends Phaser.Sprite {
         this.body.bounce.setTo(1, 1);
         this.body.velocity.x = vx;
         this.body.velocity.y = vy;
-        this.body.setSize(10, 10, 20, 20);
+        this.body.setSize(10, 10, 0, 0);
 
         game.add.existing(this);
     }

@@ -23,9 +23,13 @@ class Level extends Phaser.State {
 
     ab: Phaser.Graphics;
 
+    timer: Phaser.Timer;
+
+
     preload() {
         this.game.load.image('background','images/starfield.jpg');
-        this.game.load.image('ufo','images/ufo.png');
+        //this.game.load.image('ufo','images/ufo.png');
+        this.game.load.atlasXML('ufo', 'images/explosion.png', 'images/datas/explosion.xml');
 
         this.game.load.image('star', 'images/star.png');
         this.game.load.image('red-star', 'images/red-star.png');
@@ -60,15 +64,18 @@ class Level extends Phaser.State {
             this.bonus.add(new Bonus(game));
         }
 
-        this.spaceship = new Spaceship(game, 50, 10, 50);
+        this.spaceship = new Spaceship(game, 50, 10, 5);
+        /*this.spaceship.explode();*/
 
         this.score = 0;
         this.scoreText = game.add.text(16, 16, 'Bonus: 0 / ' + this.nbBonus + ' | Health : ' +  this.spaceship.health, { fontSize: '22px', fill: '#fff' });
         this.scoreText.fixedToCamera = true;
 
         this.doge = new Enemy(game);
-        this.doge.scale.setTo(15, 15);
+        //this.doge.scale.setTo(15, 15);
         this.doge.anchor.setTo(0, 0);
+        this.doge.x = 10;
+        this.doge.y = 10;
 
         this.test = game.add.sprite(1500, 950, 'indicator');
 
@@ -76,6 +83,12 @@ class Level extends Phaser.State {
         game.physics.arcade.enable(this.indicator);
         this.indicator.body.collideWorldBounds = true;
         this.indicator.anchor.setTo(0, 0);
+
+        var point = new Phaser.Point(this.spaceship.x, this.spaceship.y);
+
+        //console.log('PHASE : ' , point.angle(point));
+        this.timer = new Phaser.Timer(game);
+        this.timer.start();
     }
 
     update() {
@@ -85,10 +98,12 @@ class Level extends Phaser.State {
         var ufo = this.spaceship,
         test = this.test,
         camera = this.game.camera;
+
+
     }
 
     render() {
-        // this.game.debug.spriteBounds(this.doge);
+       // this.game.debug.bodyInfo(this.doge);
     }
 
     collisionEnemy(spaceship, enemy) {
@@ -97,13 +112,17 @@ class Level extends Phaser.State {
             spaceship.damage(10);
         }
 
-        if (spaceship.health == 0) {
-            window.alert("Game over");
-            this.game.state.start(this.game.state.current);
+        this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' +  spaceship.health;
+
+        if (spaceship.health <= 0) {
+            // window.alert("Game over");
+            //this.game.state.start(this.game.state.current);
+            console.log("laul wut");
+            this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' +  0;
         }
 
         spaceship.blink();
-        this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' +  spaceship.health;
+
     }
 
     collisionBonus(spaceship, bonus) {
@@ -113,6 +132,9 @@ class Level extends Phaser.State {
         bonus.kill();
 
         this.score += 1;
+        if(this.score >= this.nbBonus) {
+            console.log(this.timer.seconds);
+        }
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' +  spaceship.health;
     }
 }

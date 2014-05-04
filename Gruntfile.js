@@ -23,7 +23,7 @@ module.exports = function(grunt) {
         options: {
           module: 'amd', //or commonjs
           sourceMap: true,
-          basePath: 'dev/typescripts',
+          basePath: 'dev/typescripts/',
           declaration: true
         }
       }
