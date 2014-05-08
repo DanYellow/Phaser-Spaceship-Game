@@ -21,4 +21,5 @@ declare class Level extends Phaser.State {
     public render(): void;
     public collisionEnemy(spaceship: any, enemy: any): void;
     public collisionBonus(spaceship: any, bonus: any): void;
+    public collisionBulletsEnemies(bullet: any, enemy: any): void;
 }

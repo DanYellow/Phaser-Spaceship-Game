@@ -11,7 +11,7 @@ var Level = (function (_super) {
     }
     Level.prototype.preload = function () {
         this.game.load.image('background', 'images/starfield.jpg');
-        this.game.load.atlasXML('ufo', 'images/explosion.png', 'images/datas/explosion.xml');
+        this.game.load.atlasXML('ufo', 'images/spaceship.png', 'images/datas/spaceship.xml');
 
         this.game.load.image('star', 'images/star.png');
         this.game.load.image('red-star', 'images/red-star.png');
@@ -22,7 +22,7 @@ var Level = (function (_super) {
     };
 
     Level.prototype.create = function () {
-        this.nbEnemies = 30;
+        this.nbEnemies = 70;
         this.nbBonus = 50;
         this.stage.disableVisibilityChange = true;
 
@@ -73,8 +73,9 @@ var Level = (function (_super) {
     };
 
     Level.prototype.update = function () {
-        this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
+
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, this.collisionBulletsEnemies, this);
 
         var ufo = this.spaceship, test = this.test, camera = this.game.camera;
     };
@@ -84,23 +85,25 @@ var Level = (function (_super) {
 
     Level.prototype.collisionEnemy = function (spaceship, enemy) {
         enemy.kill();
-        if (spaceship.health > 0) {
+
+        if (spaceship.health > 0 && !spaceship.invincible) {
             spaceship.damage(10);
+            spaceship.blink();
+        } else {
+            spaceship.endInvincibleMode();
         }
 
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + spaceship.health;
 
         if (spaceship.health <= 0) {
-            console.log("laul wut");
             this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + 0;
         }
-
-        spaceship.blink();
     };
 
     Level.prototype.collisionBonus = function (spaceship, bonus) {
         if (bonus.key === 'red-star') {
             spaceship.health += 5;
+            spaceship.startInvincibleMode();
         }
         bonus.kill();
 
@@ -109,6 +112,11 @@ var Level = (function (_super) {
             console.log(this.timer.seconds);
         }
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + spaceship.health;
+    };
+
+    Level.prototype.collisionBulletsEnemies = function (bullet, enemy) {
+        bullet.kill();
+        enemy.kill();
     };
     return Level;
 })(Phaser.State);
