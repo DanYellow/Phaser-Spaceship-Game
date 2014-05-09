@@ -22,7 +22,7 @@ var Level = (function (_super) {
     };
 
     Level.prototype.create = function () {
-        this.nbEnemies = 70;
+        this.nbEnemies = 2;
         this.nbBonus = 50;
         this.stage.disableVisibilityChange = true;
 
@@ -47,17 +47,11 @@ var Level = (function (_super) {
             this.bonus.add(new Bonus(game));
         }
 
-        this.spaceship = new Spaceship(game, 50, 10, 5);
+        this.spaceship = new Spaceship(game, 50, 10, 500);
 
         this.score = 0;
         this.scoreText = game.add.text(16, 16, 'Bonus: 0 / ' + this.nbBonus + ' | Health : ' + this.spaceship.health, { fontSize: '22px', fill: '#fff' });
         this.scoreText.fixedToCamera = true;
-
-        this.doge = new Enemy(game);
-
-        this.doge.anchor.setTo(0, 0);
-        this.doge.x = 10;
-        this.doge.y = 10;
 
         this.test = game.add.sprite(1500, 950, 'indicator');
 
@@ -70,12 +64,19 @@ var Level = (function (_super) {
 
         this.timer = new Phaser.Timer(game);
         this.timer.start();
+
+        this.boss = new Boss(game);
     };
 
     Level.prototype.update = function () {
+        this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, null, this);
+
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
 
-        this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, this.collisionBulletsEnemies, this);
+        console.log(this.boss);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.boss, this.collisionBulletsEnemies);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.boss, this.collisionEnemy, null, this);
 
         var ufo = this.spaceship, test = this.test, camera = this.game.camera;
     };
@@ -84,13 +85,19 @@ var Level = (function (_super) {
     };
 
     Level.prototype.collisionEnemy = function (spaceship, enemy) {
-        enemy.kill();
+        if (!enemy.isBoss) {
+            enemy.kill();
+        }
 
         if (spaceship.health > 0 && !spaceship.invincible) {
             spaceship.damage(10);
             spaceship.blink();
         } else {
             spaceship.endInvincibleMode();
+        }
+
+        this.nbEnemies--;
+        if (this.nbEnemies <= 0) {
         }
 
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + spaceship.health;
@@ -116,7 +123,8 @@ var Level = (function (_super) {
 
     Level.prototype.collisionBulletsEnemies = function (bullet, enemy) {
         bullet.kill();
-        enemy.kill();
+        console.log('touched', enemy.health, enemy);
+        enemy.damage(1);
     };
     return Level;
 })(Phaser.State);

@@ -33,25 +33,28 @@ class Spaceship extends Phaser.Sprite {
     }
 
     update() {
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            this.x -= this.speed;
-            this.angle = -15;
-        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            this.x += this.speed;
-            this.angle = 15;
-        } else {
-            this.rotation = 0;
+        if(this.alive) {
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                this.x -= this.speed;
+                this.angle = -15;
+            } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                this.x += this.speed;
+                this.angle = 15;
+            } else {
+                this.rotation = 0;
+            }
+
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+              this.y -= this.speed;
+            } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+              this.y += this.speed;
+            }
+
+            if(this.game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR, 3)) {
+                this.shoot();
+            }
         }
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-          this.y -= this.speed;
-        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-          this.y += this.speed;
-        }
-
-        if(this.game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR, 3)) {
-            this.shoot();
-        }
 
         if (this.health <= 0 && this.isDead === false) {
             this.revive(1);
@@ -83,6 +86,7 @@ class Spaceship extends Phaser.Sprite {
         bullet.scale.x = (this.angle > 0) ? 1 : -1;
         bullet.body.velocity.x = (this.angle > 0) ? 300 : -300;
         bullet.outOfBoundsKill = true;
+        bullet.body.setSize(0,0, bullet.width, bullet.height);
 
 
         this.bullets.add(bullet);

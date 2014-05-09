@@ -10,11 +10,11 @@ declare class Level extends Phaser.State {
     public score: number;
     public scoreText: Phaser.Text;
     public camera: Phaser.Camera;
-    public doge: Enemy;
     public indicator: Phaser.Sprite;
     public test: Phaser.Sprite;
     public ab: Phaser.Graphics;
     public timer: Phaser.Timer;
+    public boss: Boss;
     public preload(): void;
     public create(): void;
     public update(): void;

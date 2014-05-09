@@ -17,13 +17,14 @@ class Level extends Phaser.State {
 
     camera: Phaser.Camera;
 
-    doge: Enemy;
     indicator: Phaser.Sprite;
     test: Phaser.Sprite;
 
     ab: Phaser.Graphics;
 
     timer: Phaser.Timer;
+
+    boss: Boss;
 
     preload() {
         this.game.load.image('background','images/starfield.jpg');
@@ -38,7 +39,7 @@ class Level extends Phaser.State {
     }
 
     create() {
-        this.nbEnemies = 70;
+        this.nbEnemies = 2;
         this.nbBonus = 50;
         this.stage.disableVisibilityChange = true;
 
@@ -63,18 +64,12 @@ class Level extends Phaser.State {
             this.bonus.add(new Bonus(game));
         }
 
-        this.spaceship = new Spaceship(game, 50, 10, 5);
-        /*this.spaceship.explode();*/
+        this.spaceship = new Spaceship(game, 50, 10, 500);
 
         this.score = 0;
         this.scoreText = game.add.text(16, 16, 'Bonus: 0 / ' + this.nbBonus + ' | Health : ' +  this.spaceship.health, { fontSize: '22px', fill: '#fff' });
         this.scoreText.fixedToCamera = true;
 
-        this.doge = new Enemy(game);
-        //this.doge.scale.setTo(15, 15);
-        this.doge.anchor.setTo(0, 0);
-        this.doge.x = 10;
-        this.doge.y = 10;
 
         this.test = game.add.sprite(1500, 950, 'indicator');
 
@@ -85,22 +80,26 @@ class Level extends Phaser.State {
 
         var point = new Phaser.Point(this.spaceship.x, this.spaceship.y);
 
-        //console.log('PHASE : ' , point.angle(point));
         this.timer = new Phaser.Timer(game);
         this.timer.start();
+
+        this.boss = new Boss(game);
+
     }
 
     update() {
-        //this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
+        this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, null, this);
+
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
 
-        this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, this.collisionBulletsEnemies, this);
+        console.log(this.boss);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.boss, this.collisionBulletsEnemies);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.boss, this.collisionEnemy, null, this);
 
         var ufo = this.spaceship,
         test = this.test,
         camera = this.game.camera;
-
-
     }
 
     render() {
@@ -108,13 +107,18 @@ class Level extends Phaser.State {
     }
 
     collisionEnemy(spaceship, enemy) {
-        enemy.kill();
+        if(!enemy.isBoss) { enemy.kill(); }
 
         if (spaceship.health > 0 && !spaceship.invincible) {
             spaceship.damage(10);
             spaceship.blink();
         } else {
             spaceship.endInvincibleMode();
+        }
+
+        this.nbEnemies--;
+        if(this.nbEnemies <= 0) {
+           // var boss = new Boss(this.game);
         }
 
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' +  spaceship.health;
@@ -142,6 +146,7 @@ class Level extends Phaser.State {
 
     collisionBulletsEnemies(bullet, enemy) {
         bullet.kill();
-        enemy.kill();
+        console.log('touched', enemy.health, enemy);
+        enemy.damage(1);
     }
 }
