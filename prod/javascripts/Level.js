@@ -65,20 +65,25 @@ var Level = (function (_super) {
         this.timer = new Phaser.Timer(game);
         this.timer.start();
 
-        this.boss = new Boss(game);
+        this.bosses = game.add.group();
+        this.bosses.enableBody = true;
+
+        this.messageText = game.add.text(0, 0, 'Alert ! Boss is detected', { font: '30px Arial', fill: '#ff0000' });
+        this.messageText.fixedToCamera = true;
+        this.messageText.x = (this.game.camera.width - this.messageText.width) / 2;
+        this.messageText.y = (this.game.camera.height - this.messageText.height) / 2;
+
+        this.bossEntrance();
     };
 
     Level.prototype.update = function () {
         this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
-        this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, null, this);
 
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
 
-        console.log(this.boss);
-        this.game.physics.arcade.overlap(this.spaceship.bullets, this.boss, this.collisionBulletsEnemies);
-        this.game.physics.arcade.overlap(this.spaceship.bullets, this.boss, this.collisionEnemy, null, this);
-
-        var ufo = this.spaceship, test = this.test, camera = this.game.camera;
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionBulletsEnemies, null, this);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionEnemy, null, this);
+        this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, null, this);
     };
 
     Level.prototype.render = function () {
@@ -98,11 +103,14 @@ var Level = (function (_super) {
 
         this.nbEnemies--;
         if (this.nbEnemies <= 0) {
+            this.bossEntrance();
         }
 
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + spaceship.health;
 
         if (spaceship.health <= 0) {
+            this.restartGame('Game over');
+
             this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + 0;
         }
     };
@@ -117,14 +125,59 @@ var Level = (function (_super) {
         this.score += 1;
         if (this.score >= this.nbBonus) {
             console.log(this.timer.seconds);
+            this.bossEntrance();
         }
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + spaceship.health;
     };
 
     Level.prototype.collisionBulletsEnemies = function (bullet, enemy) {
         bullet.kill();
-        console.log('touched', enemy.health, enemy);
         enemy.damage(1);
+        this.nbEnemies--;
+        if (this.nbEnemies <= 0) {
+            this.bossEntrance();
+        }
+
+        if (enemy.isBoss && enemy.health <= 0) {
+            this.restartGame('Stage clear', 'green');
+        }
+    };
+
+    Level.prototype.bossEntrance = function () {
+        if (this.bosses.countLiving() === 0) {
+            this.enemies.removeAll(true);
+
+            var boss = new Boss(this.game);
+            boss.name = 'boss';
+            this.bosses.add(boss);
+            this.restartGame('Alert ! Boss is detected');
+            this.game.camera.unfollow();
+
+            this.camera.setPosition(this.spaceship.x, this.spaceship.y);
+            var tweenCamera = this.game.add.tween(this.camera).to({ x: this.bosses.getAt(0).x, y: this.bosses.getAt(0).y }, 0, Phaser.Easing.Linear.None, true, null, 0, true);
+            tweenCamera.onComplete.add(function () {
+                this.game.camera.follow(this.spaceship);
+            }, this);
+        }
+    };
+
+    Level.prototype.restartGame = function (text, color, tween, restart) {
+        if (typeof text === "undefined") { text = 'Doge'; }
+        if (typeof color === "undefined") { color = 'red'; }
+        if (typeof tween === "undefined") { tween = false; }
+        if (typeof restart === "undefined") { restart = false; }
+        this.messageText.text = text;
+        this.messageText.fill = color;
+        this.messageText.alpha = 1;
+
+        if (tween) {
+            var tweenMessageText = this.game.add.tween(this.messageText).to({ alpha: 0 }, 0, Phaser.Easing.Linear.None, true, null, 5, false);
+            if (restart) {
+                tweenMessageText.onComplete.add(function () {
+                    this.game.state.start(this.game.state.current);
+                }, this);
+            }
+        }
     };
     return Level;
 })(Phaser.State);

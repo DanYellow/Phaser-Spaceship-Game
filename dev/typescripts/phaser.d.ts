@@ -1,6 +1,6 @@
 // Type definitions for PIXI 1.5.2
 // Project: https://github.com/GoodBoyDigital/pixi.js/
-// Original 1.3 by: xperiments <http://github.com/xperiments> 
+// Original 1.3 by: xperiments <http://github.com/xperiments>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
 declare module PIXI {
@@ -1149,7 +1149,7 @@ declare module Phaser {
         textureFrame: Phaser.Frame;
         type: number;
         width: number;
-        
+
         add(object: any): void;
         alphaMask(source: any, mask: any): void;
         clear(): void;
@@ -1172,7 +1172,7 @@ declare module Phaser {
         setHSL(h?: number, s?: number, l?: number, region?: Phaser.Rectangle): void;
         setPixel(x: number, y: number, red: number, green: number, blue: number, immediate?: boolean): void;
         setPixel32(x: number, y: number, red: number, green: number, blue: number, alpha: number, immediate?: boolean): void;
-        
+
     }
 
     class BitmapText extends PIXI.BitmapText {
@@ -1351,6 +1351,7 @@ declare module Phaser {
         setBoundsToWorld(): void;
         setPosition(x: number, y: number): void;
         setSize(width: number, height: number): void;
+        unfollow(): void;
         update(): void;
 
     }
