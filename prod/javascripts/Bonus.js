@@ -7,14 +7,16 @@ var __extends = this.__extends || function (d, b) {
 var Bonus = (function (_super) {
     __extends(Bonus, _super);
     function Bonus(game) {
-        var spriteName;
+        var frameName;
         if (Math.random() < 0.19) {
-            spriteName = 'red-star';
+            frameName = 'red-star.png';
+        } else if (Math.random() < 0.05) {
+            frameName = 'green-star.png';
         } else {
-            spriteName = 'star';
+            frameName = 'star.png';
         }
 
-        _super.call(this, game, game.world.randomX, game.world.randomY, spriteName, 0);
+        _super.call(this, game, game.world.randomX, game.world.randomY, 'bonus', frameName);
 
         game.physics.arcade.enable(this);
 

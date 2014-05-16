@@ -16,6 +16,8 @@ var Level = (function (_super) {
         this.game.load.image('star', 'images/star.png');
         this.game.load.image('red-star', 'images/red-star.png');
 
+        this.game.load.atlasXML('bonus', 'images/bonus.png', 'images/datas/bonus.xml');
+
         this.game.load.image('indicator', 'images/indicator.png');
 
         this.game.load.atlasXML('enemy', 'images/enemy.png', 'images/datas/enemy.xml');
@@ -27,6 +29,7 @@ var Level = (function (_super) {
         this.stage.disableVisibilityChange = true;
         this.levelIsCleared = false;
         this.bossIsTouched = false;
+        this.bulletsNewType = ['Super', 'Hyper'];
 
         var game = this.game;
 
@@ -124,10 +127,26 @@ var Level = (function (_super) {
     };
 
     Level.prototype.collisionBonus = function (spaceship, bonus) {
-        if (bonus.key === 'red-star') {
-            spaceship.health += 5;
-            spaceship.startInvincibleMode();
+        switch (bonus.frameName) {
+            case 'star.png':
+                break;
+
+            case 'red-star.png':
+                spaceship.health += 5;
+                spaceship.startInvincibleMode();
+                break;
+
+            case 'green-star.png':
+                if (this.bulletsNewType.length >= 0) {
+                    spaceship.bulletsType.push(this.bulletsNewType[0]);
+                    this.bulletsNewType.shift();
+                }
+                break;
+
+            default:
+                break;
         }
+
         bonus.kill();
 
         this.score += 1;

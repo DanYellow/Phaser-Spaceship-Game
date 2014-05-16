@@ -9,8 +9,10 @@ var Spaceship = (function (_super) {
     function Spaceship(game, x, y, hp) {
         if (typeof hp === "undefined") { hp = 10; }
         _super.call(this, game, x, y, 'ufo', 'ufo.png');
+        this.fireRate = 300;
+        this.nextFire = 0;
 
-        this.bulletsType = ['Normal', 'Super', 'Hyper'];
+        this.bulletsType = ['Normal'];
 
         this.speed = 3;
         this.i = 0;
@@ -23,9 +25,10 @@ var Spaceship = (function (_super) {
 
         this.health = hp;
         this.alive = true;
-        this.inputEnabled = false;
+        this.inputEnabled = true;
         this.anchor.setTo(0.5, 0.5);
         this.smoothed = false;
+        this.body.allowRotation = false;
 
         this.body.bounce.setTo(0, 0);
         this.body.collideWorldBounds = true;
@@ -36,6 +39,8 @@ var Spaceship = (function (_super) {
         game.add.existing(this);
     }
     Spaceship.prototype.update = function () {
+        this.rotation = this.game.physics.arcade.angleToPointer(this);
+
         if (this.alive) {
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 this.x -= this.speed;
@@ -60,11 +65,15 @@ var Spaceship = (function (_super) {
             }
 
             if (this.game.input.keyboard.justPressed(Phaser.Keyboard.CONTROL, 3)) {
-                this.bulletType = this.bulletsType[this.i];
+                if (this.bulletsType.length === 1) {
+                    return;
+                }
+
                 this.i++;
                 if (this.i >= this.bulletsType.length) {
                     this.i = 0;
                 }
+                this.bulletType = this.bulletsType[this.i];
             }
         }
 
@@ -92,8 +101,9 @@ var Spaceship = (function (_super) {
     };
 
     Spaceship.prototype.shoot = function (bulletType) {
-        var bullet = new Phaser.Sprite(this.game, this.x, this.y - (this.height / 2), 'ufo', 'bullet.png');
+        var bullet = new Phaser.Sprite(this.game, this.x, this.y, 'ufo', 'bullet.png');
         this.game.physics.arcade.enable(bullet);
+
         bullet.scale.x = (this.bulletsGoesLeft) ? -1 : 1;
 
         var speed = 1;

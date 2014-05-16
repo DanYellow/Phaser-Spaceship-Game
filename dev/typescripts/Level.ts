@@ -28,12 +28,16 @@ class Level extends Phaser.State {
     levelIsCleared: boolean;
     bossIsTouched: boolean;
 
+    bulletsNewType: any;
+
     preload() {
         this.game.load.image('background','images/starfield.jpg');
         this.game.load.atlasXML('ufo', 'images/spaceship.png', 'images/datas/spaceship.xml');
 
         this.game.load.image('star', 'images/star.png');
         this.game.load.image('red-star', 'images/red-star.png');
+
+        this.game.load.atlasXML('bonus', 'images/bonus.png', 'images/datas/bonus.xml');
 
         this.game.load.image('indicator', 'images/indicator.png');
 
@@ -46,6 +50,7 @@ class Level extends Phaser.State {
         this.stage.disableVisibilityChange = true;
         this.levelIsCleared = false;
         this.bossIsTouched = false;
+        this.bulletsNewType = ['Super', 'Hyper'];
 
         var game = this.game;
 
@@ -149,10 +154,29 @@ class Level extends Phaser.State {
     }
 
     collisionBonus(spaceship, bonus) {
-        if(bonus.key === 'red-star') {
-            spaceship.health += 5;
-            spaceship.startInvincibleMode();
+
+        switch(bonus.frameName) {
+            case 'star.png' :
+
+            break;
+
+            case 'red-star.png' :
+                spaceship.health += 5;
+                spaceship.startInvincibleMode();
+            break;
+
+            // Player earns a bonus
+            case 'green-star.png' :
+                if(this.bulletsNewType.length >= 0) {
+                    spaceship.bulletsType.push(this.bulletsNewType[0]);
+                    this.bulletsNewType.shift();
+                }
+            break;
+
+            default:
+            break;
         }
+
         bonus.kill();
 
         this.score += 1;

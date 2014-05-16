@@ -2,20 +2,25 @@
 
 class Spaceship extends Phaser.Sprite {
 
+    bullets: Phaser.Group;
+    mouse: Phaser.Mouse;
+
     speed: number;
     isDead: boolean;
     invincible: boolean;
-    bullets: Phaser.Group;
     bulletsGoesLeft: boolean;
     bulletsType: any;
     bulletType: string;
+    fireRate = 300;
+    nextFire = 0;
+
 
     i: number;
 
     constructor (game: Phaser.Game, x: number, y: number, hp: number = 10) {
         super(game, x, y, 'ufo', 'ufo.png');
 
-        this.bulletsType = ['Normal', 'Super', 'Hyper'];
+        this.bulletsType = ['Normal'];
 
         this.speed = 3;
         this.i = 0;
@@ -28,9 +33,11 @@ class Spaceship extends Phaser.Sprite {
 
         this.health = hp;
         this.alive = true;
-        this.inputEnabled = false;
+        this.inputEnabled = true;
         this.anchor.setTo(0.5, 0.5);
         this.smoothed = false;
+        this.body.allowRotation = false;
+
 
         this.body.bounce.setTo(0, 0);
         this.body.collideWorldBounds = true;
@@ -42,6 +49,8 @@ class Spaceship extends Phaser.Sprite {
     }
 
     update() {
+        this.rotation = this.game.physics.arcade.angleToPointer(this);
+
         if(this.alive) {
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 this.x -= this.speed;
@@ -67,14 +76,25 @@ class Spaceship extends Phaser.Sprite {
 
             // Change bullet mode
             if(this.game.input.keyboard.justPressed(Phaser.Keyboard.CONTROL, 3)) {
-                this.bulletType = this.bulletsType[this.i];
+                if(this.bulletsType.length === 1) {
+                    return;
+                }
+
                 this.i++;
                 if(this.i >= this.bulletsType.length) {
                     this.i = 0;
                 }
+                this.bulletType = this.bulletsType[this.i];
             }
         }
 
+        // if (this.game.input.activePointer.isDown) {
+        //         if (this.game.time.now > this.nextFire) {
+        //             this.nextFire = this.game.time.now + this.fireRate;
+
+        //             this.shoot(this.bulletType);
+        //         }
+        //     }
 
         if (this.health <= 0 && this.isDead === false) {
             this.revive(1);
@@ -100,9 +120,12 @@ class Spaceship extends Phaser.Sprite {
     }
 
     shoot(bulletType) {
-
-        var bullet = new Phaser.Sprite(this.game, this.x, this.y - (this.height/2), 'ufo', 'bullet.png');
+        // this.game.input.mousePointer.x + this.game.camera.x, this.game.input.mousePointer.y + this.game.camera.y
+        var bullet = new Phaser.Sprite(this.game, this.x, this.y, 'ufo', 'bullet.png');
         this.game.physics.arcade.enable(bullet);
+
+        //this.game.physics.arcade.moveToPointer(bullet, this.fireRate);
+
         bullet.scale.x = (this.bulletsGoesLeft) ? -1 : 1;
 
         var speed = 1;

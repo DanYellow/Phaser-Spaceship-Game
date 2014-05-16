@@ -3,14 +3,18 @@ class Bonus extends Phaser.Sprite {
     game: Phaser.Game
 
     constructor (game: Phaser.Game) {
-        var spriteName;
+        var frameName;
         if (Math.random() < 0.19) {
-            spriteName = 'red-star';
+            frameName = 'red-star.png';
+        } else if (Math.random() < 0.05) {
+            frameName = 'green-star.png';
         } else {
-            spriteName = 'star';
+            frameName = 'star.png'
         }
 
-        super(game, game.world.randomX, game.world.randomY, spriteName, 0);
+        // frameName = 'green-star.png';
+
+        super(game, game.world.randomX, game.world.randomY, 'bonus', frameName);
 
         game.physics.arcade.enable(this);
 
