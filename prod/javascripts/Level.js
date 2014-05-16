@@ -22,15 +22,17 @@ var Level = (function (_super) {
     };
 
     Level.prototype.create = function () {
-        this.nbEnemies = 2;
+        this.nbEnemies = 25;
         this.nbBonus = 50;
         this.stage.disableVisibilityChange = true;
+        this.levelIsCleared = false;
+        this.bossIsTouched = false;
 
         var game = this.game;
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.add.tileSprite(0, 0, 2000, 2000, 'background');
-        game.world.setBounds(0, 0, 2000, 2000);
+        game.add.tileSprite(0, 0, 1500, 1500, 'background');
+        game.world.setBounds(0, 0, 1500, 1500);
 
         this.enemies = game.add.group();
         this.enemies.enableBody = true;
@@ -52,6 +54,7 @@ var Level = (function (_super) {
         this.score = 0;
         this.scoreText = game.add.text(16, 16, 'Bonus: 0 / ' + this.nbBonus + ' | Health : ' + this.spaceship.health, { fontSize: '22px', fill: '#fff' });
         this.scoreText.fixedToCamera = true;
+        this.scoreText.z = 9999;
 
         this.test = game.add.sprite(1500, 950, 'indicator');
 
@@ -68,16 +71,16 @@ var Level = (function (_super) {
         this.bosses = game.add.group();
         this.bosses.enableBody = true;
 
-        this.messageText = game.add.text(0, 0, 'Alert ! Boss is detected', { font: '30px Arial', fill: '#ff0000' });
+        this.messageText = game.add.text(game.camera.width / 2, game.camera.height / 2, 'Alert ! Boss is detected', { font: '30px Arial', fill: '#ff0000' });
         this.messageText.fixedToCamera = true;
-        this.messageText.x = (this.game.camera.width - this.messageText.width) / 2;
-        this.messageText.y = (this.game.camera.height - this.messageText.height) / 2;
-
-        this.bossEntrance();
+        this.messageText.alpha = 0;
+        this.messageText.x = (game.camera.width - this.messageText.width) / 2;
+        this.messageText.y = (game.camera.height - this.messageText.height) / 2;
     };
 
     Level.prototype.update = function () {
         this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
+        this.game.physics.arcade.overlap(this.spaceship, this.bosses, this.collisionEnemy, null, this);
 
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
 
@@ -109,9 +112,14 @@ var Level = (function (_super) {
         this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + spaceship.health;
 
         if (spaceship.health <= 0) {
-            this.restartGame('Game over');
+            this.messageText.text = 'Game over';
+            this.messageText.alpha = 1;
 
             this.scoreText.text = 'Bonus: ' + this.score + ' / ' + this.nbBonus + ' | Health : ' + 0;
+        }
+
+        if (enemy.isBoss) {
+            this.bossIsTouched = true;
         }
     };
 
@@ -133,13 +141,26 @@ var Level = (function (_super) {
     Level.prototype.collisionBulletsEnemies = function (bullet, enemy) {
         bullet.kill();
         enemy.damage(1);
+
         this.nbEnemies--;
-        if (this.nbEnemies <= 0) {
-            this.bossEntrance();
-        }
 
         if (enemy.isBoss && enemy.health <= 0) {
-            this.restartGame('Stage clear', 'green');
+            this.messageText.text = 'Stage clear';
+            this.messageText.alpha = 1;
+            this.messageText.fill = 'green';
+            this.levelIsCleared = true;
+            var tweenMessageText = this.game.add.tween(this.messageText).to({ alpha: 0 }, 0, Phaser.Easing.Linear.None, true, null, 5, false);
+            tweenMessageText.onComplete.add(function () {
+                this.game.state.start(this.game.state.current);
+            }, this);
+        }
+
+        if (enemy.isBoss) {
+            enemy.blink();
+        }
+
+        if (this.nbEnemies <= 0 && !this.levelIsCleared) {
+            this.bossEntrance();
         }
     };
 
@@ -150,33 +171,15 @@ var Level = (function (_super) {
             var boss = new Boss(this.game);
             boss.name = 'boss';
             this.bosses.add(boss);
-            this.restartGame('Alert ! Boss is detected');
+            this.messageText.alpha = 1;
+            var tweenMessageText = this.game.add.tween(this.messageText).to({ alpha: 0 }, 0, Phaser.Easing.Linear.None, true, null, 5, false);
             this.game.camera.unfollow();
 
             this.camera.setPosition(this.spaceship.x, this.spaceship.y);
-            var tweenCamera = this.game.add.tween(this.camera).to({ x: this.bosses.getAt(0).x, y: this.bosses.getAt(0).y }, 0, Phaser.Easing.Linear.None, true, null, 0, true);
+            var tweenCamera = this.game.add.tween(this.camera).to({ x: this.bosses.getAt(0).x, y: this.bosses.getAt(0).y }, 0, Phaser.Easing.Quadratic.InOut, true, null, 0, true);
             tweenCamera.onComplete.add(function () {
                 this.game.camera.follow(this.spaceship);
             }, this);
-        }
-    };
-
-    Level.prototype.restartGame = function (text, color, tween, restart) {
-        if (typeof text === "undefined") { text = 'Doge'; }
-        if (typeof color === "undefined") { color = 'red'; }
-        if (typeof tween === "undefined") { tween = false; }
-        if (typeof restart === "undefined") { restart = false; }
-        this.messageText.text = text;
-        this.messageText.fill = color;
-        this.messageText.alpha = 1;
-
-        if (tween) {
-            var tweenMessageText = this.game.add.tween(this.messageText).to({ alpha: 0 }, 0, Phaser.Easing.Linear.None, true, null, 5, false);
-            if (restart) {
-                tweenMessageText.onComplete.add(function () {
-                    this.game.state.start(this.game.state.current);
-                }, this);
-            }
         }
     };
     return Level;

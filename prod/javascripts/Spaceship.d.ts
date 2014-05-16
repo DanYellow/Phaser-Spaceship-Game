@@ -4,12 +4,16 @@ declare class Spaceship extends Phaser.Sprite {
     public isDead: boolean;
     public invincible: boolean;
     public bullets: Phaser.Group;
+    public bulletsGoesLeft: boolean;
+    public bulletsType: any;
+    public bulletType: string;
+    public i: number;
     constructor(game: Phaser.Game, x: number, y: number, hp?: number);
     public update(): void;
     public startInvincibleMode(): void;
     public endInvincibleMode(): void;
     public blink(): void;
-    public shoot(): void;
+    public shoot(bulletType: any): void;
     public indicatePosition(): {
         x: number;
         y: number;

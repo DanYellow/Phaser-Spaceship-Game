@@ -10,9 +10,13 @@ var Spaceship = (function (_super) {
         if (typeof hp === "undefined") { hp = 10; }
         _super.call(this, game, x, y, 'ufo', 'ufo.png');
 
+        this.bulletsType = ['Normal', 'Super', 'Hyper'];
+
         this.speed = 3;
+        this.i = 0;
         this.isDead = false;
         this.invincible = false;
+        this.bulletsGoesLeft = true;
 
         game.camera.follow(this);
         game.physics.arcade.enable(this);
@@ -36,9 +40,11 @@ var Spaceship = (function (_super) {
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 this.x -= this.speed;
                 this.angle = -15;
+                this.bulletsGoesLeft = true;
             } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
                 this.x += this.speed;
                 this.angle = 15;
+                this.bulletsGoesLeft = false;
             } else {
                 this.rotation = 0;
             }
@@ -50,7 +56,15 @@ var Spaceship = (function (_super) {
             }
 
             if (this.game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR, 3)) {
-                this.shoot();
+                this.shoot(this.bulletType);
+            }
+
+            if (this.game.input.keyboard.justPressed(Phaser.Keyboard.CONTROL, 3)) {
+                this.bulletType = this.bulletsType[this.i];
+                this.i++;
+                if (this.i >= this.bulletsType.length) {
+                    this.i = 0;
+                }
             }
         }
 
@@ -77,12 +91,32 @@ var Spaceship = (function (_super) {
         var tween = this.game.add.tween(this).to({ alpha: 1 }, 10, Phaser.Easing.Linear.None, true, 0, 5);
     };
 
-    Spaceship.prototype.shoot = function () {
+    Spaceship.prototype.shoot = function (bulletType) {
         var bullet = new Phaser.Sprite(this.game, this.x, this.y - (this.height / 2), 'ufo', 'bullet.png');
-
         this.game.physics.arcade.enable(bullet);
-        bullet.scale.x = (this.angle > 0) ? 1 : -1;
-        bullet.body.velocity.x = (this.angle > 0) ? 300 : -300;
+        bullet.scale.x = (this.bulletsGoesLeft) ? -1 : 1;
+
+        var speed = 1;
+
+        switch (bulletType) {
+            case 'Normal':
+                speed = 1;
+                break;
+
+            case 'Super':
+                speed = 2;
+                break;
+
+            case 'Hyper':
+                speed = 3;
+                break;
+
+            default:
+                speed = 1;
+                break;
+        }
+
+        bullet.body.velocity.x = (this.bulletsGoesLeft) ? -300 * speed : 300 * speed;
         bullet.outOfBoundsKill = true;
         bullet.body.setSize(0, 0, bullet.width, bullet.height);
 
