@@ -113,6 +113,14 @@ class Level extends Phaser.State {
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionBulletsEnemies, null, this);
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionEnemy, null, this);
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, null, this);
+
+        this.truc();
+    }
+
+    truc() {
+        // if(!this.bossIsTouched && !this.game.physics.arcade.intersects(this.spaceship, this.bosses.getAt(0))) {
+        //     this.bossIsTouched = true;
+        // }
     }
 
     render() {
@@ -124,8 +132,9 @@ class Level extends Phaser.State {
             enemy.kill();
         }
 
-        //if(this.bossIsTouched && this.game.physics.arcade.intersects())
-
+        if(this.bossIsTouched && this.game.physics.arcade.intersects(spaceship, enemy)) {
+            this.bossIsTouched = false;
+        }
 
         if (spaceship.health > 0 && !spaceship.invincible) {
             spaceship.damage(10);

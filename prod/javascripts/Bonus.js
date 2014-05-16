@@ -8,9 +8,9 @@ var Bonus = (function (_super) {
     __extends(Bonus, _super);
     function Bonus(game) {
         var frameName;
-        if (Math.random() < 0.19) {
+        if (Math.random() < 0.29) {
             frameName = 'red-star.png';
-        } else if (Math.random() < 0.05) {
+        } else if (Math.random() < 0.10) {
             frameName = 'green-star.png';
         } else {
             frameName = 'star.png';

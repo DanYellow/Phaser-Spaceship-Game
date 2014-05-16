@@ -4,9 +4,9 @@ class Bonus extends Phaser.Sprite {
 
     constructor (game: Phaser.Game) {
         var frameName;
-        if (Math.random() < 0.19) {
+        if (Math.random() < 0.29) {
             frameName = 'red-star.png';
-        } else if (Math.random() < 0.05) {
+        } else if (Math.random() < 0.10) {
             frameName = 'green-star.png';
         } else {
             frameName = 'star.png'

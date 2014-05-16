@@ -36,9 +36,7 @@ class Spaceship extends Phaser.Sprite {
         this.inputEnabled = true;
         this.anchor.setTo(0.5, 0.5);
         this.smoothed = false;
-        this.body.allowRotation = false;
-
-
+        //this.body.allowRotation = false;
         this.body.bounce.setTo(0, 0);
         this.body.collideWorldBounds = true;
         this.body.gravity.setTo(0, 0);

@@ -90,6 +90,11 @@ var Level = (function (_super) {
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionBulletsEnemies, null, this);
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionEnemy, null, this);
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, null, this);
+
+        this.truc();
+    };
+
+    Level.prototype.truc = function () {
     };
 
     Level.prototype.render = function () {
@@ -98,6 +103,10 @@ var Level = (function (_super) {
     Level.prototype.collisionEnemy = function (spaceship, enemy) {
         if (!enemy.isBoss) {
             enemy.kill();
+        }
+
+        if (this.bossIsTouched && this.game.physics.arcade.intersects(spaceship, enemy)) {
+            this.bossIsTouched = false;
         }
 
         if (spaceship.health > 0 && !spaceship.invincible) {
