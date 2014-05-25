@@ -8,14 +8,13 @@ class Spaceship extends Phaser.Sprite {
     speed: number;
     isDead: boolean;
     invincible: boolean;
+
     bulletsGoesLeft: boolean;
     bulletsType: any;
     bulletType: string;
-    fireRate = 300;
-    nextFire = 0;
-
-
     i: number;
+
+    gamepad: Phaser.Gamepad;
 
     constructor (game: Phaser.Game, x: number, y: number, hp: number = 10) {
         super(game, x, y, 'ufo', 'ufo.png');
@@ -43,11 +42,19 @@ class Spaceship extends Phaser.Sprite {
 
         this.bullets = game.add.group();
 
+        this.gamepad = new Phaser.Gamepad(game);
+        this.gamepad.start();
+        console.log(this.gamepad.padsConnected);
+
         game.add.existing(this);
     }
 
     update() {
         this.rotation = this.game.physics.arcade.angleToPointer(this);
+
+        if(this.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT)) {
+            console.log('ok');
+        }
 
         if(this.alive) {
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -99,6 +106,8 @@ class Spaceship extends Phaser.Sprite {
             this.isDead = true;
             this.explode();
         }
+
+
     }
 
     startInvincibleMode() {

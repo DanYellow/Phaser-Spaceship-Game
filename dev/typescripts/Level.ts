@@ -30,6 +30,8 @@ class Level extends Phaser.State {
 
     bulletsNewType: any;
 
+    actionTimestamp: number;
+
     preload() {
         this.game.load.image('background','images/starfield.jpg');
         this.game.load.atlasXML('ufo', 'images/spaceship.png', 'images/datas/spaceship.xml');
@@ -51,6 +53,7 @@ class Level extends Phaser.State {
         this.levelIsCleared = false;
         this.bossIsTouched = false;
         this.bulletsNewType = ['Super', 'Hyper'];
+        this.actionTimestamp = 0;
 
         var game = this.game;
 
@@ -105,12 +108,17 @@ class Level extends Phaser.State {
 
     update() {
         this.game.physics.arcade.overlap(this.spaceship, this.enemies, this.collisionEnemy, null, this);
-        this.game.physics.arcade.overlap(this.spaceship, this.bosses, this.collisionEnemy, null, this);
+
+        if (this.actionTimestamp < this.game.time.time) {
+            this.actionTimestamp = this.game.time.time + 2000;
+            this.game.physics.arcade.overlap(this.spaceship, this.bosses, this.collisionEnemy, null, this);
+        }
 
 
         this.game.physics.arcade.overlap(this.spaceship, this.bonus, this.collisionBonus, null, this);
 
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionBulletsEnemies, null, this);
+
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.bosses, this.collisionEnemy, null, this);
         this.game.physics.arcade.overlap(this.spaceship.bullets, this.enemies, this.collisionBulletsEnemies, null, this);
 

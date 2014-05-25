@@ -19,6 +19,7 @@ declare class Level extends Phaser.State {
     public levelIsCleared: boolean;
     public bossIsTouched: boolean;
     public bulletsNewType: any;
+    public actionTimestamp: number;
     public preload(): void;
     public create(): void;
     public update(): void;

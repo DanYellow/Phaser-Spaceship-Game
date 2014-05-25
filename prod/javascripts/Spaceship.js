@@ -9,8 +9,6 @@ var Spaceship = (function (_super) {
     function Spaceship(game, x, y, hp) {
         if (typeof hp === "undefined") { hp = 10; }
         _super.call(this, game, x, y, 'ufo', 'ufo.png');
-        this.fireRate = 300;
-        this.nextFire = 0;
 
         this.bulletsType = ['Normal'];
 
@@ -35,10 +33,18 @@ var Spaceship = (function (_super) {
 
         this.bullets = game.add.group();
 
+        this.gamepad = new Phaser.Gamepad(game);
+        this.gamepad.start();
+        console.log(this.gamepad.padsConnected);
+
         game.add.existing(this);
     }
     Spaceship.prototype.update = function () {
         this.rotation = this.game.physics.arcade.angleToPointer(this);
+
+        if (this.gamepad.isDown(Phaser.Gamepad.XBOX360_DPAD_LEFT)) {
+            console.log('ok');
+        }
 
         if (this.alive) {
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
