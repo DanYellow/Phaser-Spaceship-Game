@@ -28,8 +28,6 @@ class Level extends Phaser.State {
     levelIsCleared: boolean;
     bossIsTouched: boolean;
 
-    bulletsNewType: any;
-
     actionTimestamp: number;
 
     preload() {
@@ -52,7 +50,6 @@ class Level extends Phaser.State {
         this.stage.disableVisibilityChange = true;
         this.levelIsCleared = false;
         this.bossIsTouched = false;
-        this.bulletsNewType = ['Super', 'Hyper'];
         this.actionTimestamp = 0;
 
         var game = this.game;
@@ -184,10 +181,7 @@ class Level extends Phaser.State {
 
             // Player earns a bonus
             case 'green-star.png' :
-                if(this.bulletsNewType.length >= 0) {
-                    spaceship.bulletsType.push(this.bulletsNewType[0]);
-                    this.bulletsNewType.shift();
-                }
+                spaceship.upgradeBulletsMode();
             break;
 
             default:

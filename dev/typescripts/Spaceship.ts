@@ -10,8 +10,8 @@ class Spaceship extends Phaser.Sprite {
     invincible: boolean;
 
     bulletsGoesLeft: boolean;
-    bulletsType: any;
-    bulletType: string;
+
+    bulletType: number;
     i: number;
 
     gamepad: Phaser.Gamepad;
@@ -19,8 +19,8 @@ class Spaceship extends Phaser.Sprite {
     constructor (game: Phaser.Game, x: number, y: number, hp: number = 10) {
         super(game, x, y, 'ufo', 'ufo.png');
 
-        this.bulletsType = ['Normal'];
 
+        this.bulletType = 0;
         this.speed = 3;
         this.i = 0;
         this.isDead = false;
@@ -76,20 +76,7 @@ class Spaceship extends Phaser.Sprite {
             }
 
             if(this.game.input.keyboard.justPressed(Phaser.Keyboard.SPACEBAR, 3)) {
-                this.shoot(this.bulletType);
-            }
-
-            // Change bullet mode
-            if(this.game.input.keyboard.justPressed(Phaser.Keyboard.CONTROL, 3)) {
-                if(this.bulletsType.length === 1) {
-                    return;
-                }
-
-                this.i++;
-                if(this.i >= this.bulletsType.length) {
-                    this.i = 0;
-                }
-                this.bulletType = this.bulletsType[this.i];
+                this.shoot();
             }
         }
 
@@ -126,41 +113,40 @@ class Spaceship extends Phaser.Sprite {
         var tween = this.game.add.tween(this).to( { alpha: 1 }, 10, Phaser.Easing.Linear.None, true, <number>0, <number>5);
     }
 
-    shoot(bulletType) {
-        // this.game.input.mousePointer.x + this.game.camera.x, this.game.input.mousePointer.y + this.game.camera.y
-        var bullet = new Phaser.Sprite(this.game, this.x, this.y, 'ufo', 'bullet.png');
-        this.game.physics.arcade.enable(bullet);
+    upgradeBulletsMode() {
+        this.bulletType++;
+    }
 
-        //this.game.physics.arcade.moveToPointer(bullet, this.fireRate);
-
-        bullet.scale.x = (this.bulletsGoesLeft) ? -1 : 1;
-
+    shoot() {
         var speed = 1;
 
-        switch(bulletType) {
-            case 'Normal' :
+        var thisPosition = new Phaser.Point(this.x, this.y);
+
+        switch(this.bulletType) {
+            case 0 :
                 speed = 1;
             break;
 
-            case 'Super' :
+            case 1 :
                 speed = 2;
+                var bullet2 = new Bullet(this.game, speed, this, 0, new Phaser.Point(thisPosition.x, thisPosition.y - 20));
+                this.bullets.add(bullet2);
             break;
 
-            case 'Hyper' :
+            case 2 :
                 speed = 3;
             break;
 
             default:
-                speed = 1;
+                speed = 3;
             break;
         }
 
-        bullet.body.velocity.x = (this.bulletsGoesLeft) ? -300 * speed : 300 * speed;
-        bullet.outOfBoundsKill = true;
-        bullet.body.setSize(0,0, bullet.width, bullet.height);
 
 
+        var bullet = new Bullet(this.game, speed, this, 0, thisPosition);
         this.bullets.add(bullet);
+
         this.game.add.existing(this.bullets);
     }
 
